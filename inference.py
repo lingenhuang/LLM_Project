@@ -5,7 +5,7 @@ from tqdm import tqdm
 import torch
 
 # Define the path to your locally saved model and tokenizer
-local_model_path = "./gpt-neo-2.7B"  # Update this path
+local_model_path = "./gpt-neo-lora_3"  # Update this path
 
 # Load the tokenizer and model from the local directory
 tokenizer = AutoTokenizer.from_pretrained(local_model_path)
@@ -17,14 +17,14 @@ model.to(device)
 
 # Load the harmful dataset
 dataset = load_dataset("LLM-LAT/harmful-dataset")  # Ensure the dataset is available
-last_500 = dataset["train"][-500:]  # Use the last 500 samples
+last_500 = dataset["train"][1500:2000]  # Use the last 500 samples
 
 # Extract prompts and true labels
 prompts = last_500["prompt"]
 true_labels = last_500["chosen"]
 
 # Define generation parameters
-max_length = 50
+max_length = 128
 num_return_sequences = 1
 
 # Generate responses for all prompts
@@ -43,11 +43,17 @@ for prompt in tqdm(prompts, desc="Inference Progress"):
     generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
     generated_responses.append(generated_text)
 
+# Remove the prompt from the generated responses
+trimmed_responses = [response[len(prompt):].strip() for response, prompt in zip(generated_responses, prompts)]
 # Calculate BERTScore
 print("\nCalculating BERTScore...")
-P, R, F1 = score(generated_responses, true_labels, lang="en", model_type="bert-base-uncased")
+P, R, F1 = score(trimmed_responses, true_labels, lang="en", model_type="bert-base-uncased")
 
 # Print average scores
 print(f"\nAverage BERTScore F1: {F1.mean().item():.4f}")
 print(f"Average BERTScore Precision: {P.mean().item():.4f}")
 print(f"Average BERTScore Recall: {R.mean().item():.4f}")
+
+print(f"\nSample prompt: {prompts[0]}")
+print(f"Generated response: {trimmed_responses[0]}")
+print(f"True label: {true_labels[0]}")

@@ -17,11 +17,11 @@ model.to(device)
 
 # Load the harmful dataset
 dataset = load_dataset("LLM-LAT/harmful-dataset")  # Ensure the dataset is available
-last_1000 = dataset["train"][-1000:]  # Use the last 1000 samples
+last_500 = dataset["train"][-500:]  # Use the last 500 samples
 
 # Extract prompts and true labels
-prompts = last_1000["prompt"]
-true_labels = last_1000["chosen"]
+prompts = last_500["prompt"]
+true_labels = last_500["chosen"]
 
 # Define generation parameters
 max_length = 50

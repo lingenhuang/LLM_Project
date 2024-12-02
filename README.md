@@ -87,7 +87,7 @@ Validation BertScore for each model
 | Average BERTScore Recall    | 0.4419  | 0.6935  |0.7217|0.7047|0.7316|
 
 Testing: neo-125M v.s. Full_4
-| Metric                 | gpt-neo-1.3B | Full_4 |
+| Metric                 | gpt-neo-125M | Full_4 |
 |------------------------|---------|---------|
 | Average BERTScore F1   | 0.4359 | 0.7152  | 
 | Average BERTScore Precision | 0.4243  | 0.7214  | 
